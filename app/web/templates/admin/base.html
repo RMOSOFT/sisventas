@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <!--
+    <title>RMOSOFT Ventas MVP</title>--->
+    <title>
+        {% if empresa %}{{ empresa.nombre }} • {% endif %}RMOSOFT Ventas
+    </title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="/static/css/styles.css">
+    <link rel="stylesheet" href="/static/css/ticket_80mm.css">
+
+    
+</head>
+<body class="bg-slate-50" data-rol="{{ user.rol }}" data-user="{{ user.id }}" data-page="{{ page|default('') }}">
+
+    <header class="bg-white border-b sticky top-0 z-10 ">
+
+      <!-- =========================
+           HEADER 1: LOGO + EMPRESA | [#F7FAFF] #0B1F3AUSUARIO
+      ========================== -->
+      <div class="border-b bg-[#0B1F3A] relative overflow-hidden">
+        <div class="pointer-events-none absolute inset-0 opacity-[0.35]"style="background-image: linear-gradient(to right, rgba(11,31,58,.08) 1px, transparent 1px),linear-gradient(to bottom, rgba(11,31,58,.08) 1px,transparent 1px);background-size: 40px 40px;">
+        </div>
+        <div class="max-w-8xl mx-auto px-4 py-3">
+          <div class="flex items-center justify-between gap-4">
+
+            <!-- IZQUIERDA: Logo + Empresa -->
+            <div class="flex items-center gap-3 min-w-0">
+              <img src="/static/img/logo-rmosoft.png" class="h-10 w-auto shrink-0" alt="RMOSOFT">
+
+              <div class="min-w-0">
+                <div class="font-bold text-[#64748B] text-slate-400 truncate">
+                  {% if empresa %}
+                    {{ empresa.nombre }} • Sistema de Ventas
+
+                  {% else %}
+                    RMOSOFT
+                  {% endif %}
+                </div>
+                <div class="text-xs text-slate-300 truncate">
+                  • Sistema de Ventas
+                </div>
+              </div>
+            </div>
+
+            <!-- DERECHA: Bienvenida -->
+            <div class="text-right leading-tight shrink-0">
+              <div class="text-sm font-semibold text-slate-300">
+                Hola, {{ user.nombre }}{% if user.apellido %} {{ user.apellido }}{% endif %}
+              </div>
+              <div class="text-xs text-slate-100">
+                {% if user.rol == "admin" %}Administrador{% else %}Vendedor{% endif %}
+                • {{ user.email }}
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- =========================
+           HEADER 2: MENÚ | BOTÓN SALIR
+      ========================== -->
+      <div class="bg-white">
+        <div class="max-w-7xl mx-auto px-4 py-2">
+          <div class="flex items-center gap-3">
+
+            <!-- MENÚ -->
+            <nav class="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm">
+
+              <a class="navlink hover:underline" data-path="/admin/dashboard" href="/admin/dashboard">Dashboard</a>
+              <a class="navlink hover:underline" data-path="/admin/pos" href="/admin/pos">POS</a>
+              <a class="navlink hover:underline" data-path="/admin/products" href="/admin/products">Productos</a>
+              <a class="navlink hover:underline" data-path="/admin/inventory" href="/admin/inventory">Inventario</a>
+              <a class="navlink hover:underline" data-path="/admin/sales" href="/admin/sales">Ventas</a>
+              <a class="navlink hover:underline" data-path="/admin/reports" href="/admin/reports">Reportes</a>
+              <a class="navlink hover:underline" data-path="/admin/users" href="/admin/users">Usuarios</a>
+
+              {% if user.rol == "admin" %}
+                <a class="navlink hover:underline" data-path="/admin/solicitudes" href="/admin/solicitudes">Solicitudes</a>
+                <a class="navlink hover:underline" data-path="/admin/history" href="/admin/history">Historial</a>
+              {% endif %}
+
+            </nav>
+
+            <!-- SALIR al final -->
+            <div class="ml-auto">
+              <button
+                id="btn_logout"
+                class="inline-flex items-center rounded-lg px-3 py-1.5 text-sm font-semibold
+                       bg-[#0B1F3A] text-white hover:opacity-95">
+                Salir
+              </button>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+    </header>
+    
+    <main class="max-w-6xl mx-auto p-3">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Aqui el las llamadas del scripts para las cores importantes para cada pagina-->
+    
+    <script src="/static/js/core/api.js"></script>
+    <script src="/static/js/core/utils.js"></script>
+    <script src="/static/js/core/boot.js"></script>
+
+    <!-- Scripts si no da las funciones de las dinamicas
+    <script src="/static/app_legacy.js"></script>-->
+
+    <!-- Llamada a cada pagina de los templates
+    <script src="/static/js/admin/pages/dashboard.js"></script>
+    <script src="/static/js/admin/pages/pos.js"></script>
+    <script src="/static/js/admin/pages/products.js"></script>
+    <script src="/static/js/admin/pages/inventory.js"></script>
+    <script src="/static/js/admin/pages/sales.js"></script>
+    <script src="/static/js/admin/pages/reports.js"></script>
+    <script src="/static/js/admin/pages/users.js"></script>
+    <script src="/static/js/admin/pages/solicitudes.js"></script>
+    <script src="/static/js/admin/pages/history.js"></script>
+    -->
+
+    <script src="/static/js/admin/layouts.js"></script>
+    <script src="/static/js/superadmin/layouts.js"></script>
+
+</body>
+</html>

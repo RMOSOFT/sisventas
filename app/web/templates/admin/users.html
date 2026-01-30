@@ -1,0 +1,107 @@
+{% extends "admin/base.html" %}
+{% block content %}
+
+<div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+  <div>
+    <h1 class="text-xl font-bold">Usuarios</h1>
+    <p class="text-sm text-slate-500">Crea vendedores o administradores y envía link para crear contraseña.</p>
+  </div>
+
+  <button id="btn_open" class="rounded-lg px-4 py-2 bg-black text-white font-semibold">
+    + Nuevo usuario
+  </button>
+</div>
+
+<div class="bg-white border rounded-2xl shadow-sm mt-4 overflow-hidden">
+  <div class="p-3 border-b text-sm text-slate-500">Listado</div>
+  <div id="list" class="divide-y"></div>
+</div>
+
+<!-- Modal -->
+<div id="modal" class="hidden fixed inset-0 bg-black/40 p-4 flex items-center justify-center">
+  <div class="w-full max-w-lg bg-white rounded-2xl p-5">
+    <div class="flex items-center justify-between mb-3">
+      <h2 class="text-lg font-bold">Crear usuario</h2>
+      <button id="btn_close" class="text-sm underline">Cerrar</button>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+      <input id="f_nombre" class="border rounded-lg px-3 py-2" placeholder="Nombre *">
+      <input id="f_apellido" class="border rounded-lg px-3 py-2" placeholder="Apellido">
+
+      <input id="f_email" class="border rounded-lg px-3 py-2 sm:col-span-2" placeholder="Email *">
+      <input id="f_username" class="border rounded-lg px-3 py-2" placeholder="Usuario (opcional)">
+      <input id="f_telefono" class="border rounded-lg px-3 py-2" placeholder="Teléfono">
+
+      <select id="f_rol" class="border rounded-lg px-3 py-2 sm:col-span-2">
+        <option value="vendedor">Vendedor</option>
+        <option value="admin">Administrador</option>
+      </select>
+    </div>
+
+    <div id="msg" class="text-sm mt-3 text-red-600"></div>
+
+    <div class="mt-4 flex justify-end gap-2">
+      <button id="btn_save" class="rounded-lg px-4 py-2 bg-blue-700 text-white font-semibold">
+        Guardar y enviar link
+      </button>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+<!-- Modal Acceso Restringido para empleado antes de crear usuarios-->
+<div id="access_modal" class="hidden fixed inset-0 z-50">
+    <!-- Overlay -->
+    <div id="access_overlay"
+        class="absolute inset-0 bg-black/40 opacity-0 transition-opacity duration-200">         
+    </div>
+
+    <!-- Card -->
+    <div class="absolute inset-0 flex items-center justify-center p-4">
+        <div id="access_card"
+            class="w-full max-w-md rounded-2xl bg-white shadow-xl border
+                translate-y-2 opacity-0 transition-all duration-200">
+            <div class="p-5">
+                <div class="flex items-start gap-3">
+                    <div class="h-10 w-10 rounded-xl bg-amber-50 border border-amber-200 flex items-center justify-center">
+                    <span class="text-xl">🔒</span>
+                    </div>
+                    <div class="flex-1">
+                        <h3 class="text-lg font-bold text-slate-900">Acceso restringido
+                        </h3>
+                        <p class="mt-1 text-sm text-slate-600" id="access_text">
+                            Esta acción requiere autorización del Administrador.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="mt-4 flex justify-end gap-2">
+                    <button id="access_ok"
+                        class="rounded-lg px-4 py-2 font-semibold bg-slate-900 text-white hover:bg-slate-800">
+                        Entendido
+                    </button>
+                </div>
+
+                <p class="mt-3 text-xs text-slate-400">
+                    Si necesitas permisos, solicita al Administrador que habilite tu acceso para crear usuarios.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--
+<script src="/static/js/admin/pages/users.js"></script>
+-->
+
+<script>
+  window.page = "users";
+</script>
+{% endblock %}
+

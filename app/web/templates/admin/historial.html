@@ -1,0 +1,132 @@
+{% extends "admin/base.html" %}
+{% set page = "historial" %}
+{% block content %}
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-3 items-start">
+  <!-- Título -->
+  <div class="lg:col-span-4">
+    <h1 class="text-xl font-bold">Historial</h1>
+    <p class="text-sm text-slate-500">
+      Registro visible de acciones importantes (solicitudes, aprobaciones, denegados).
+    </p>
+  </div>
+
+  <!-- Filtros (lado derecho) -->
+  <div class="lg:col-span-8">
+    <div class="flex flex-wrap items-center justify-end gap-2">
+
+        <div class="relative lg:col-span-4">
+          <img src="/static/img/admin/icons/icons_history/buscador.png"
+               class="h-4 w-4 absolute left-3 top-1/2 -translate-y-1/2 opacity-60" alt="search">
+          <input id="q" class="border rounded-lg pl-9 pr-3 py-2 text-sm w-64"
+                 placeholder="Buscar (título, mensaje, evento)">
+        </div>
+      <!-- Buscar (derecha, compacto) 
+      <input id="q"
+        class="h-9 w-64 border rounded-lg px-3 text-sm"
+        placeholder="Buscar (título, mensaje, evento)">-->
+
+      <!-- Actor dropdown (✅ parent relative) -->
+      <div class="relative w-56">
+        <button id="actor_btn"
+          class="w-full h-9 border rounded-lg px-3 text-sm text-left bg-white">
+          👤 Admin: Todos
+        </button>
+
+        <div id="actor_dd"
+          class="hidden absolute right-0 z-20 mt-1 w-80 bg-white border rounded-xl shadow-lg overflow-hidden">
+          <div class="p-2 border-b">
+            <input id="actor_q"
+              class="w-full h-9 border rounded-lg px-3 text-sm"
+              placeholder="Buscar administrador..." />
+          </div>
+          <div id="actor_list" class="max-h-64 overflow-auto text-sm"></div>
+        </div>
+      </div>
+
+      <!-- Target dropdown -->
+      <div class="relative w-56">
+        <button id="target_btn"
+          class="w-full h-9 border rounded-lg px-3 text-sm text-left bg-white">
+          🎯 Empleados: Todos
+        </button>
+
+        <div id="target_dd"
+          class="hidden absolute right-0 z-20 mt-1 w-80 bg-white border rounded-xl shadow-lg overflow-hidden">
+          <div class="p-2 border-b">
+            <input id="target_q"
+              class="w-full h-9 border rounded-lg px-3 text-sm"
+              placeholder="Buscar empleado..." />
+          </div>
+          <div id="target_list" class="max-h-64 overflow-auto text-sm"></div>
+        </div>
+      </div>
+
+      <!-- Evento -->
+      <select id="event" class="h-9 border rounded-lg px-3 text-sm">
+        <option value="">📌 Todos</option>
+        <option value="access_request">🟡 Solicitud</option>
+        <option value="access_approved">🟢 Aprobado</option>
+        <option value="access_denied">🔴 Denegado</option>
+      </select>
+
+      <!-- Botones compactos (PRO) -->
+      <button id="btn_export_pdf"
+        class="h-9 px-3 rounded-lg bg-blue-900 text-white font-semibold text-sm hover:bg-red-500">
+        <span class="inline-flex items-center gap-2">
+          <img src="/static/img/admin/icons/icons_history/pdf.png" class="h-4 w-4" alt="">
+          PDF
+        </span>
+      </button>
+
+      <button id="his_btn_refresh"
+        class="h-9 px-3 rounded-lg bg-black text-white font-semibold text-sm hover:bg-slate-800">
+        <span class="inline-flex items-center gap-2">
+          <img src="/static/img/admin/icons/icons_history/actualizar.png" class="h-4 w-4" alt="">
+          Refresh
+        </span>
+      </button>
+
+    </div>
+  </div>
+</div>
+
+
+
+<div class="bg-white border rounded-2xl shadow-sm mt-4 overflow-hidden">
+    <!--text-slate-100 bg-blue-900-->
+    <div class="p-3 border-b text-sm text-white bg-[#0B1F3A]">Últimos eventos</div>
+
+    <div id="his_err" class="hidden p-3 text-red-600"></div>
+
+    <div class="overflow-x-auto">
+        <table class="w-full text-sm">
+            <thead class="bg-slate-200 text-slate-800">
+                <tr>
+                    <th class="text-left p-3">Fecha</th>
+                    <th class="text-left p-3">Evento</th>
+                    <th class="text-left p-3">Título</th>
+                    <th class="text-left p-3">Mensaje</th>
+                </tr>
+            </thead>
+            <tbody id="his_rows"></tbody>
+            <tbody>
+                <tr id="his_emptyRow" class="hidden">
+                    <td class="p-3 text-slate-500" colspan="4">Aún no hay historial.</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!--
+    <div id="empty" class="hidden p-3 text-slate-500">Aún no hay historial.
+    </div>
+
+    <script src="/static/js/admin/pages/history.js"></script>
+    -->
+</div>
+
+<script>
+  window.page = "history";
+</script>
+
+{% endblock %}

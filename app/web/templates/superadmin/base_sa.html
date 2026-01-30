@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>RMOSOFT • SuperAdmin</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- JS global del SuperAdmin (IMPORTANTE: defer) -->
+  <script src="/static/js/superadmin/layout.js" defer></script>
+</head>
+<body class="bg-slate-50">
+
+    <header class="border-b bg-white">
+        <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
+            <div class="font-bold">RMOSOFT • SuperAdmin</div>
+            <div class="flex items-center gap-4">
+                <div class="text-sm text-slate-600">{% if sa %}{{ sa.email }}{% endif %}</div>
+
+                <!-- ÚNICO botón logout aquí -->
+                <a id="btn_sa_logout" class="text-sm underline" href="#">Salir</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto px-4 py-6">
+        {% block content %}{% endblock %}
+    </main>
+</body>
+</html>

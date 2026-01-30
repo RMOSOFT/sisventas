@@ -1,0 +1,96 @@
+{% extends "admin/base.html" %}
+{% block content %}
+
+<div class="flex flex-col md:flex-row md:items-center md:justify-between gap-2">
+  <h1 class="text-xl font-bold">Productos</h1>
+
+  <div class="flex gap-2 w-full md:w-auto">
+    <input id="p_search" class="border rounded-lg px-3 py-2 w-full md:w-72" placeholder="Buscar producto..." />
+    <button id="btn_open_modal" class="bg-black text-white rounded-lg px-4 py-2 font-semibold">
+      + Nuevo
+    </button>
+  </div>
+</div>
+
+<div class="bg-white rounded-xl shadow-sm border mt-3 overflow-hidden">
+  <div class="p-3 border-b text-sm text-slate-500">
+    Lista de productos (responsive)
+  </div>
+  <div id="products_list" class="divide-y"></div>
+</div>
+
+<!-- Modal Nuevo Producto (PRO: responsive + scroll + header sticky) -->
+<div id="modal" class="fixed inset-0 bg-black/50 hidden z-50">
+  <div class="min-h-screen w-full flex items-center justify-center p-3">
+    <div class="bg-white rounded-2xl w-full max-w-xl shadow-xl border
+                max-h-[90vh] overflow-y-auto">
+
+      <!-- Header sticky -->
+      <div class="sticky top-0 bg-white border-b px-4 py-3 flex items-center justify-between">
+        <h2 class="font-semibold text-lg">Nuevo Producto</h2>
+        <button id="btn_close_modal"
+                class="text-sm underline px-2 py-1 rounded hover:bg-slate-100">
+          Cerrar
+        </button>
+      </div>
+
+      <!-- Body -->
+      <div class="p-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+          <input id="f_nombre" class="border rounded-lg px-3 py-2" placeholder="Nombre *" />
+          <input id="f_sku" class="border rounded-lg px-3 py-2" placeholder="SKU (opcional)" />
+
+          <input id="f_precio" type="number" step="0.01" class="border rounded-lg px-3 py-2" placeholder="Precio *" />
+          <input id="f_costo" type="number" step="0.01" class="border rounded-lg px-3 py-2" placeholder="Costo *" />
+
+          <input id="f_stock" type="number" step="0.01" class="border rounded-lg px-3 py-2" placeholder="Stock inicial" />
+          <input id="f_min" type="number" step="0.01" class="border rounded-lg px-3 py-2" placeholder="Stock mínimo" />
+        </div>
+
+        <div class="mt-3 flex gap-2">
+          <button id="btn_save_product" class="bg-black text-white rounded-lg px-4 py-2 font-semibold w-full">
+            Guardar
+          </button>
+        </div>
+
+        <div id="p_msg" class="text-sm mt-2"></div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- Modal Nuevo Producto 
+<div id="modal" class="fixed inset-0 bg-black/40 hidden items-center justify-center p-3">
+  <div class="bg-white rounded-xl w-full max-w-xl p-4">
+    <div class="flex items-center justify-between mb-3">
+      <h2 class="font-semibold text-lg">Nuevo Producto</h2>
+      <button id="btn_close_modal" class="text-sm underline">Cerrar</button>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+      <input id="f_nombre" class="border rounded-lg px-3 py-2" placeholder="Nombre *" />
+      <input id="f_sku" class="border rounded-lg px-3 py-2" placeholder="SKU (opcional)" />
+
+      <input id="f_precio" type="number" step="0.01" class="border rounded-lg px-3 py-2" placeholder="Precio *" />
+      <input id="f_costo" type="number" step="0.01" class="border rounded-lg px-3 py-2" placeholder="Costo *" />
+
+      <input id="f_stock" type="number" step="0.01" class="border rounded-lg px-3 py-2" placeholder="Stock inicial" />
+      <input id="f_min" type="number" step="0.01" class="border rounded-lg px-3 py-2" placeholder="Stock mínimo" />
+    </div>
+
+    <div class="mt-3 flex gap-2">
+      <button id="btn_save_product" class="bg-black text-white rounded-lg px-4 py-2 font-semibold w-full">
+        Guardar
+      </button>
+    </div>
+
+    <div id="p_msg" class="text-sm mt-2"></div>
+  </div>
+</div>
+-->
+
+<script>
+  window.page = "products";
+</script>
+{% endblock %}

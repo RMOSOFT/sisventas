@@ -1,0 +1,56 @@
+{% extends "admin/base.html" %}
+{% block content %}
+
+<div class="flex flex-col md:flex-row md:items-center md:justify-between gap-2">
+  <div>
+    <h1 class="text-xl font-bold">Reportes</h1>
+    <p class="text-sm text-slate-500">Ventas por día + productos más y menos vendidos</p>
+  </div>
+
+  <div class="flex gap-2 items-center">
+    <select id="rep_days" class="border rounded-lg px-3 py-2 text-sm">
+      <option value="7">Últimos 7 días</option>
+      <option value="30" selected>Últimos 30 días</option>
+      <option value="90">Últimos 90 días</option>
+    </select>
+    <button id="rep_refresh" class="text-sm underline">Actualizar</button>
+  </div>
+</div>
+
+<div class="grid gap-3 mt-3 lg:grid-cols-3">
+  <!-- Ventas por día -->
+  <section class="bg-white rounded-xl p-4 shadow-sm border lg:col-span-3">
+    <div class="flex items-center justify-between">
+      <div class="font-semibold">Ventas por día</div>
+      <div class="text-xs text-slate-500">* Periodo seleccionado</div>
+    </div>
+    <div id="by_day" class="mt-2 text-sm overflow-x-auto"></div>
+  </section>
+
+  <!-- Top -->
+  <section class="bg-white rounded-xl p-4 shadow-sm border">
+    <div class="font-semibold">Top productos</div>
+    <div id="top_list" class="mt-2 text-sm space-y-2"></div>
+  </section>
+
+  <!-- Bottom -->
+  <section class="bg-white rounded-xl p-4 shadow-sm border">
+    <div class="font-semibold">Menos vendidos</div>
+    <div id="bottom_list" class="mt-2 text-sm space-y-2"></div>
+  </section>
+
+  <!-- Tips -->
+  <section class="bg-white rounded-xl p-4 shadow-sm border">
+    <div class="font-semibold">Cómo usar esto</div>
+    <ul class="text-sm text-slate-600 list-disc pl-4 mt-2 space-y-1">
+      <li>Top = lo que debes reponer primero.</li>
+      <li>Menos vendidos = lo que ocupa espacio o debe promocionarse.</li>
+      <li>Ventas por día = identifica tus mejores días.</li>
+    </ul>
+  </section>
+</div>
+
+<script>
+  window.page = "reports";
+</script>
+{% endblock %}

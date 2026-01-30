@@ -1,0 +1,48 @@
+{% extends "admin/base.html" %}
+{% block content %}
+
+<h1 class="text-xl font-bold">Inventario</h1>
+<p class="text-sm text-slate-500">Registrar entradas, salidas y ajustes (modo demo profesional)</p>
+
+<div class="grid gap-3 mt-3 lg:grid-cols-3">
+  <!-- Formulario -->
+  <section class="bg-white rounded-xl p-4 shadow-sm border">
+    <div class="font-semibold mb-2">Movimiento</div>
+
+    <label class="text-sm text-slate-600">Producto</label>
+    <select id="m_producto" class="border rounded-lg px-3 py-2 w-full mt-1"></select>
+
+    <label class="text-sm text-slate-600 mt-3 block">Tipo</label>
+    <select id="m_tipo" class="border rounded-lg px-3 py-2 w-full mt-1">
+      <option value="entrada">Entrada</option>
+      <option value="salida">Salida</option>
+      <option value="ajuste">Ajuste (fijar stock)</option>
+    </select>
+
+    <label class="text-sm text-slate-600 mt-3 block">Cantidad</label>
+    <input id="m_cantidad" type="number" step="0.01" class="border rounded-lg px-3 py-2 w-full mt-1" />
+
+    <label class="text-sm text-slate-600 mt-3 block">Referencia (opcional)</label>
+    <input id="m_ref" class="border rounded-lg px-3 py-2 w-full mt-1" placeholder="Ej: Compra proveedor" />
+
+    <button id="btn_move" class="bg-black text-white rounded-lg px-4 py-2 font-semibold w-full mt-3">
+      Registrar
+    </button>
+
+    <div id="m_msg" class="text-sm mt-2"></div>
+  </section>
+
+  <!-- Alertas stock bajo -->
+  <section class="bg-white rounded-xl p-4 shadow-sm border lg:col-span-2">
+    <div class="flex items-center justify-between">
+      <div class="font-semibold">Alertas stock bajo</div>
+      <button id="btn_refresh_low" class="text-sm underline">Actualizar</button>
+    </div>
+    <div id="low_list" class="mt-2 text-sm space-y-2"></div>
+  </section>
+</div>
+
+<script>
+  window.page = "inventory";
+</script>
+{% endblock %}

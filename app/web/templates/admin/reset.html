@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>RMOSOFT • Restablecer contraseña</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="min-h-screen bg-slate-50 flex items-center justify-center p-4">
+  <div class="w-full max-w-md bg-white border rounded-2xl shadow-sm p-6">
+    <div class="mb-4">
+      <div class="text-xl font-bold">RMOSOFT</div>
+      <div class="text-sm text-slate-500">Restablecer contraseña</div>
+    </div>
+
+    <div class="space-y-3">
+      <input id="p1" type="password" class="w-full border rounded-lg px-3 py-2" placeholder="Nueva contraseña">
+      <input id="p2" type="password" class="w-full border rounded-lg px-3 py-2" placeholder="Confirmar contraseña">
+
+      <button id="btn" class="w-full bg-black text-white rounded-lg px-4 py-2 font-semibold">
+        Guardar
+      </button>
+
+      <div id="msg" class="text-sm text-red-600"></div>
+    </div>
+  </div>
+
+<script>
+  const msg = document.getElementById("msg");
+  const token = new URLSearchParams(location.search).get("token") || "";
+
+  document.getElementById("btn").onclick = async () => {
+    msg.textContent = "";
+    const p1 = document.getElementById("p1").value;
+    const p2 = document.getElementById("p2").value;
+
+    if(!token){ msg.textContent="Token faltante"; return; }
+    if(p1.length < 8){ msg.textContent="Mínimo 8 caracteres"; return; }
+    if(p1 !== p2){ msg.textContent="Las contraseñas no coinciden"; return; }
+
+    const res = await fetch("/api/v1/admin/auth/reset", {
+      method:"POST",
+      headers:{ "Content-Type":"application/json" },
+      body: JSON.stringify({ token, new_password: p1 })
+    });
+
+    const data = await res.json().catch(()=> ({}));
+    if(!res.ok){
+      msg.textContent = data.detail || "Error";
+      return;
+    }
+
+    msg.className="text-sm text-green-600";
+    msg.textContent="✅ Contraseña actualizada. Ya puedes iniciar sesión.";
+    setTimeout(()=> location.href="/login", 1200);
+  };
+</script>
+</body>
+</html>

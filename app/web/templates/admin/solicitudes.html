@@ -1,0 +1,50 @@
+{% extends "admin/base.html" %}
+
+{% set page = "solicitudes" %}
+
+{% block content %}
+
+<div class="flex items-center justify-between gap-2">
+  <div>
+    <h1 class="text-xl font-bold">Solicitudes de acceso</h1>
+    <p class="text-sm text-slate-500">Aprueba o deniega solicitudes de permisos de tus empleados.</p>
+  </div>
+
+  <button id="req_btn_refresh" class="rounded-lg px-4 py-2 bg-slate-900 text-white font-semibold hover:bg-slate-800">
+    Refrescar
+  </button>
+</div>
+
+<div class="bg-white border rounded-2xl shadow-sm mt-4 overflow-hidden">
+  <div class="p-3 border-b text-sm text-slate-500">Pendientes</div>
+
+  <div class="overflow-x-auto">
+    <table class="min-w-full text-sm">
+      <thead class="bg-slate-50 text-slate-600">
+        <tr>
+          <th class="text-left p-3">Empleado</th>
+          <th class="text-left p-3">Recurso</th>
+          <th class="text-left p-3">Motivo</th>
+          <th class="text-left p-3">Fecha</th>
+          <th class="text-right p-3">Acción</th>
+        </tr>
+      </thead>
+      <tbody id="req_rows" class="divide-y"></tbody>
+    </table>
+  </div>
+
+  <div id="req_empty" class="hidden p-6 text-slate-500 text-sm">
+    No hay solicitudes pendientes ✅
+  </div>
+
+  <div id="req_err" class="hidden p-6 text-red-600 text-sm"></div>
+</div>
+
+<!--
+<script src="/static/js/admin/pages/solicitudes.js"></script>
+-->
+
+<script>
+  window.page = "solicitudes";
+</script>
+{% endblock %}

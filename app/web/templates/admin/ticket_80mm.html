@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Ticket #{{ numero }}</title>
+  <style>
+    /* Ticket 80mm */
+    body { margin: 0; padding: 0; font-family: Arial, sans-serif; }
+    .ticket { width: 80mm; padding: 8px; }
+    .center { text-align: center; }
+    .muted { color: #555; font-size: 12px; }
+    .line { border-top: 1px dashed #000; margin: 8px 0; }
+    .row { display: flex; justify-content: space-between; gap: 8px; }
+    .bold { font-weight: 700; }
+    .small { font-size: 12px; }
+    .items { margin-top: 6px; }
+    .item { margin: 6px 0; }
+    .item-name { font-size: 13px; font-weight: 700; }
+    .item-sub { font-size: 12px; display:flex; justify-content: space-between; }
+    .actions { width: 80mm; padding: 8px; }
+    button { width: 100%; padding: 10px; border: 1px solid #000; background: #000; color: #fff; font-weight: 700; cursor: pointer; }
+    @media print {
+      .actions { display: none; }
+      body { background: #fff; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="actions">
+  <button onclick="window.print()">Imprimir ticket</button>
+</div>
+
+<div class="ticket">
+  <div class="center bold">{{ empresa_nombre }}</div>
+  <div class="center muted">{{ empresa_direccion or "" }}</div>
+  <div class="center muted">{{ empresa_telefono or "" }}</div>
+
+  <div class="line"></div>
+
+  <div class="row small">
+    <div>Ticket:</div>
+    <div class="bold">#{{ numero }}</div>
+  </div>
+  <div class="row small">
+    <div>Fecha:</div>
+    <div>{{ fecha }}</div>
+  </div>
+  <div class="row small">
+    <div>Pago:</div>
+    <div>{{ metodo_pago }}</div>
+  </div>
+
+  <div class="line"></div>
+
+  <div class="items">
+    {% for it in items %}
+      <div class="item">
+        <div class="item-name">{{ it.nombre }}</div>
+        <div class="item-sub">
+          <div>{{ "%.2f"|format(it.cantidad) }} x S/ {{ "%.2f"|format(it.precio_unitario) }}</div>
+          <div>S/ {{ "%.2f"|format(it.total_linea) }}</div>
+        </div>
+        {% if it.descuento and it.descuento > 0 %}
+          <div class="muted small">Desc: S/ {{ "%.2f"|format(it.descuento) }}</div>
+        {% endif %}
+      </div>
+    {% endfor %}
+  </div>
+
+  <div class="line"></div>
+
+  <div class="row small">
+    <div>Subtotal</div>
+    <div>S/ {{ "%.2f"|format(subtotal) }}</div>
+  </div>
+  <div class="row small">
+    <div>Desc. total</div>
+    <div>S/ {{ "%.2f"|format(descuento_total) }}</div>
+  </div>
+  <div class="row bold">
+    <div>TOTAL</div>
+    <div>S/ {{ "%.2f"|format(total) }}</div>
+  </div>
+
+  <div class="line"></div>
+  <div class="center muted small">Gracias por su compra</div>
+  <div class="center muted small">RMOSOFT • Sistema de Ventas</div>
+</div>
+
+</body>
+</html>

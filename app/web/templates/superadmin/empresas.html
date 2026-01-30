@@ -1,0 +1,47 @@
+{% extends "superadmin/base_sa.html" %}
+{% block content %}
+
+    <!---
+    <div class="flex items-center justify-between">
+        <h1 class="text-xl font-bold">Empresas</h1>
+        <button id="btn_refresh" class="text-sm underline">Actualizar</button>
+    </div>
+    -->
+
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+      <h1 class="text-xl font-bold">Empresas</h1>
+      <div class="flex gap-2 justify-end">
+        <button id="btn_refresh" class="text-sm underline">Actualizar</button>
+      </div>
+    </div>
+
+  <div class="bg-white border rounded-2xl shadow-sm mt-3 overflow-hidden">
+    <div class="p-3 border-b text-sm text-slate-500">Listado</div>
+    <div id="list" class="divide-y"></div>
+  </div>
+
+  <script>
+    async function load(){
+      const r = await fetch("/api/v1/superadmin/empresas");
+      const data = await r.json();
+      const list = document.getElementById("list");
+
+      if(!Array.isArray(data) || data.length === 0){
+        list.innerHTML = `<div class="p-3 text-slate-500">Sin empresas aún.</div>`;
+        return;
+      }
+
+      list.innerHTML = data.map(e => `
+        <div class="p-3 flex items-center justify-between">
+          <div>
+            <div class="font-semibold">${e.nombre}</div>
+            <div class="text-xs text-slate-500">ID: ${e.id} • Activo: ${e.activo}</div>
+          </div>
+        </div>
+      `).join("");
+    }
+
+    document.getElementById("btn_refresh").onclick = load;
+    load();
+  </script>
+{% endblock %}

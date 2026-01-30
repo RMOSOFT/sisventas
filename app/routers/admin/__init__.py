@@ -1,0 +1,12 @@
+from .auth import router as ad_auth_router
+from .dashboard import router as ad_dashboard_router
+from .products import router as ad_products_router
+from .inventory import router as ad_inventory_router
+from .sales import router as ad_sales_router
+from .reports import router as ad_reports_router
+from .users import router as ad_users_router
+from .access import router as ad_access_router
+from .history import router as ad_history_router
+from .history_pdf import router as ad_history_pdf_router
+from .kardex import router as ad_kardex_router
+from .clientes import router as ad_clientes_router

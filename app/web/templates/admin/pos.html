@@ -1,0 +1,155 @@
+{% extends "admin/base.html" %}
+{% block content %}
+<div class="grid gap-3 lg:grid-cols-3">
+  <section class="lg:col-span-2 bg-white rounded-xl p-4 shadow-sm border">
+    <div class="flex flex-col sm:flex-row gap-2 sm:items-center sm:justify-between">
+      <div class="font-semibold">POS • Venta</div>
+      <input id="search" class="border rounded-lg px-3 py-2 w-full sm:w-72" placeholder="Buscar producto..." />
+    </div>
+
+    <div id="products_grid" class="grid gap-2 mt-3 grid-cols-1 sm:grid-cols-2">
+      <!-- productos -->
+    </div>
+
+
+  </section>
+
+
+
+  <aside class="bg-white rounded-xl p-4 shadow-sm border">
+    <div class="font-semibold">Carrito</div>
+    <div id="cart" class="mt-2 space-y-2 text-sm"></div>
+
+    <!-- Nuevo codigo agregado -->  
+    <div class="border rounded-xl p-3 mb-3">
+      <div class="text-sm font-semibold mb-2">Cliente</div>
+
+      <div class="flex gap-2">
+        <input id="cli_q" class="border rounded px-3 py-2 w-full" placeholder="Buscar DNI/RUC/NOMBRE..." />
+        <button id="cli_btn_search" class="border rounded px-3 py-2">Buscar</button>
+      </div>
+
+      <div id="cli_results" class="mt-2 text-sm"></div>
+
+      <div id="cli_selected" class="mt-2 text-xs text-slate-600"></div>
+
+      <div class="mt-2">
+        <button id="cli_btn_quick" class="text-xs underline">Crear cliente rápido</button>
+      </div>
+    </div>
+
+    <div class="mt-3 border-t pt-3 space-y-2">
+      <div class="flex justify-between">
+        <span>Subtotal</span><strong id="subtotal">0.00</strong>
+      </div>
+      <input id="descuento_total" class="border rounded-lg px-3 py-2 w-full" placeholder="Descuento total (opcional)" />
+      <select id="metodo_pago" class="border rounded-lg px-3 py-2 w-full">
+        <option value="efectivo">Efectivo</option>
+        <option value="yape">Yape</option>
+        <option value="plin">Plin</option>
+        <option value="tarjeta">Tarjeta</option>
+      </select>
+      <button id="btn_cobrar" class="w-full bg-black text-white rounded-lg py-2 font-semibold">
+        Cobrar
+      </button>
+      <div id="msg" class="text-sm"></div>
+    </div>
+  </aside>
+</div>
+
+
+<!-- MODAL: Crear cliente rápido -->
+<div id="cli_modal" class="hidden fixed inset-0 z-50">
+  <div class="absolute inset-0 bg-black/40"></div>
+
+  <div class="relative mx-auto mt-24 w-[95%] max-w-lg bg-white rounded-2xl shadow-xl border overflow-hidden">
+    <div class="px-4 py-3 bg-[#0B1F3A] text-white flex items-center justify-between">
+      <div class="font-semibold">Crear cliente rápido</div>
+      <button id="cli_modal_close" class="px-2 py-1 rounded hover:bg-white/10">✕</button>
+    </div>
+
+    <div class="p-4 space-y-3">
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+        <div>
+          <label class="text-xs text-slate-600">Tipo</label>
+          <select id="cli_tipo" class="border rounded-lg px-3 py-2 w-full">
+            <option value="DNI">DNI</option>
+            <option value="RUC">RUC</option>
+            <option value="CE">CE</option>
+          </select>
+        </div>
+        <div class="sm:col-span-2">
+          <label class="text-xs text-slate-600">N° Documento</label>
+          <input id="cli_num" class="border rounded-lg px-3 py-2 w-full" placeholder="DNI/RUC/CE..." />
+        </div>
+      </div>
+
+      <div>
+        <label class="text-xs text-slate-600">Nombre / Razón social</label>
+        <input id="cli_razon" class="border rounded-lg px-3 py-2 w-full" placeholder="Ej: Juan Pérez / Empresa SAC" />
+      </div>
+
+      <div>
+        <label class="text-xs text-slate-600">Dirección</label>
+        <input id="cli_dir" class="border rounded-lg px-3 py-2 w-full" placeholder="Dirección (opcional)" />
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+        <div>
+          <label class="text-xs text-slate-600">Teléfono</label>
+          <input id="cli_tel" class="border rounded-lg px-3 py-2 w-full" placeholder="opcional" />
+        </div>
+        <div>
+          <label class="text-xs text-slate-600">Email</label>
+          <input id="cli_email" class="border rounded-lg px-3 py-2 w-full" placeholder="opcional" />
+        </div>
+      </div>
+
+      <div id="cli_modal_msg" class="text-sm"></div>
+
+      <div class="flex justify-end gap-2 pt-2">
+        <button id="cli_modal_cancel" class="border rounded-lg px-4 py-2 hover:bg-slate-50">Cancelar</button>
+        <button id="cli_modal_save" class="rounded-lg px-4 py-2 bg-[#0B1F3A] text-white font-semibold hover:opacity-95">
+          Guardar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: Post-venta -->
+<div id="sale_modal" class="hidden fixed inset-0 z-50">
+  <div class="absolute inset-0 bg-black/40"></div>
+
+  <div class="relative mx-auto mt-24 w-[95%] max-w-md bg-white rounded-2xl shadow-xl border overflow-hidden">
+    <div class="px-4 py-3 bg-[#0B1F3A] text-white flex items-center justify-between">
+      <div class="font-semibold">Venta emitida</div>
+      <button id="sale_modal_close" class="px-2 py-1 rounded hover:bg-white/10">✕</button>
+    </div>
+
+    <div class="p-4 space-y-2">
+      <div id="sale_modal_title" class="text-lg font-bold"></div>
+      <div id="sale_modal_sub" class="text-sm text-slate-600"></div>
+
+      <div class="flex flex-col sm:flex-row gap-2 pt-3">
+        <button id="sale_btn_print" class="flex-1 rounded-lg px-4 py-2 bg-[#0B1F3A] text-white font-semibold">
+          Imprimir ticket
+        </button>
+        <button id="sale_btn_new" class="flex-1 border rounded-lg px-4 py-2 font-semibold hover:bg-slate-50">
+          Nueva venta
+        </button>
+      </div>
+
+      <button id="sale_btn_cancel" class="w-full mt-2 border border-red-200 text-red-700 rounded-lg px-4 py-2 font-semibold hover:bg-red-50 hidden">
+        Anular esta venta
+      </button>
+
+      <div id="sale_modal_msg" class="text-sm mt-2"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+  window.page = "pos";
+</script>
+{% endblock %}

@@ -1,0 +1,99 @@
+{% extends "admin/base.html" %}
+{% block content %}
+
+<!-- Cards principales -->
+<div class="grid gap-3 md:grid-cols-4">
+  <div class="bg-white rounded-xl p-4 shadow-sm border">
+    <div class="text-sm text-slate-500">Ventas totales (emitidas)</div>
+    <div id="ventas_total" class="text-2xl font-bold">—</div>
+  </div>
+
+  <div class="bg-white rounded-xl p-4 shadow-sm border">
+    <div class="text-sm text-slate-500">Tickets (emitidos)</div>
+    <div id="tickets" class="text-2xl font-bold">—</div>
+  </div>
+
+  <div class="bg-white rounded-xl p-4 shadow-sm border">
+    <div class="text-sm text-slate-500">Anuladas (S/)</div>
+    <div id="anuladas_total" class="text-2xl font-bold">—</div>
+    <div class="text-xs text-slate-500 mt-1">
+      Tickets anulados: <span id="tickets_anulados">—</span>
+    </div>
+  </div>
+
+  <div class="bg-white rounded-xl p-4 shadow-sm border">
+    <div class="text-sm text-slate-500">Stock bajo</div>
+    <div id="low_count" class="text-2xl font-bold">—</div>
+  </div>
+</div>
+
+<!-- Bloques -->
+<div class="grid gap-3 mt-3 md:grid-cols-2">
+  <div class="bg-white rounded-xl p-4 shadow-sm border">
+    <div class="font-semibold mb-2">Top productos (emitidos)</div>
+    <ul id="top_list" class="text-sm space-y-1"></ul>
+  </div>
+
+  <div class="bg-white rounded-xl p-4 shadow-sm border">
+    <div class="font-semibold mb-2">Alertas stock bajo</div>
+    <ul id="low_list" class="text-sm space-y-1"></ul>
+  </div>
+</div>
+
+<div class="grid gap-3 mt-3 md:grid-cols-2">
+  <div class="bg-white rounded-xl p-4 shadow-sm border">
+    <div class="font-semibold mb-2">Top anulaciones (control)</div>
+    <ul id="top_anulaciones_list" class="text-sm space-y-1"></ul>
+  </div>
+
+  <div class="bg-white rounded-xl p-4 shadow-sm border">
+    <div class="font-semibold mb-2">Últimas ventas anuladas</div>
+    <ul id="ultimas_anuladas_list" class="text-sm space-y-1"></ul>
+    <div class="text-xs text-slate-500 mt-2">
+      * Esto ayuda a detectar anulaciones sospechosas y mantener auditoría.
+    </div>
+  </div>
+</div>
+
+<script>
+  window.page = "dashboard";
+</script>
+<!-- Modal Acceso Restringido para empleado antes de ingresar al panel del dashboard-->
+<div id="accessModal" class="hidden fixed inset-0 bg-black/40 p-4 flex items-center justify-center">
+    <div class="w-full max-w-lg bg-white rounded-2xl p-6 shadow-xl animate-[fadeIn_.2s_ease-out]">
+        <div class="flex items-start gap-3">
+            <div class="h-10 w-10 rounded-xl bg-amber-50 flex items-center justify-center border border-amber-200">
+                🔒
+            </div>
+            <div class="flex-1">
+                <h3 class="text-lg font-bold">Acceso restringido</h3>
+                <p class="text-sm text-slate-600 mt-1">
+                  Para ver el Dashboard completo necesitas autorización del Administrador.
+                </p>
+
+                <div id="accessMsg" class="text-sm mt-3 text-slate-500"></div>
+
+                <div class="mt-5 flex justify-end gap-2">
+                    <button id="btnCloseAccess" class="rounded-lg px-4 py-2 border border-slate-200 hover:bg-slate-50">
+                    Cerrar
+                    </button>
+                    <button id="btnRequestAccess" class="rounded-lg px-4 py-2 bg-blue-700 text-white font-semibold hover:bg-blue-600">
+                    Solicitar acceso
+                    </button>
+                </div>
+
+                <p class="text-xs text-slate-400 mt-4">
+                  Se enviará una solicitud al Administrador para aprobación.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    @keyframes fadeIn { from {opacity:0; transform: translateY(6px);} to {opacity:1; transform: translateY(0);} }
+</style>
+{% endblock %}
+
+
+
