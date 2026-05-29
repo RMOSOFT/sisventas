@@ -13,3 +13,5 @@ class VentaDetalle(Base):
     precio_unitario: Mapped[float] = mapped_column(Numeric(12, 2), nullable=False)
     descuento: Mapped[float] = mapped_column(Numeric(12, 2), nullable=False, default=0)
     total_linea: Mapped[float] = mapped_column(Numeric(12, 2), nullable=False)
+
+    

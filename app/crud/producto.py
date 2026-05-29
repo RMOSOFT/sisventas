@@ -12,6 +12,10 @@ def get_product(db: Session, empresa_id: int, product_id: int):
     return db.get(Producto, product_id)
 
 def create_product(db: Session, empresa_id: int, data):
+    data = dict(data)
+    data["unidad"] = (data.get("unidad") or "UND").strip()
+    data["marca"] = (data.get("marca") or None)
+    
     p = Producto(empresa_id=empresa_id, **data)
     db.add(p)
     db.commit()

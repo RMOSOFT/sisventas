@@ -24,3 +24,9 @@ class Venta(Base):
     cash_session_id: Mapped[int | None] = mapped_column(Integer, nullable=True)
 
     created_at: Mapped[DateTime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+
+    efectivo_recibido: Mapped[float] = mapped_column(Numeric(12,2), nullable=False, default=0)
+    vuelto: Mapped[float] = mapped_column(Numeric(12,2), nullable=False, default=0)
+    tipo_comprobante: Mapped[str] = mapped_column(String(2), nullable=False, server_default="B")  # B o F
+    serie: Mapped[str] = mapped_column(String(4), nullable=False, server_default="B001")         # B001 / F001
+    correlativo: Mapped[int] = mapped_column(Integer, nullable=False, server_default="0")        # correlativo por serie

@@ -18,5 +18,12 @@ class Producto(Base):
     stock_actual: Mapped[float] = mapped_column(Numeric(12, 2), nullable=False, default=0)
     stock_minimo: Mapped[float] = mapped_column(Numeric(12, 2), nullable=False, default=0)
 
+    marca: Mapped[str | None] = mapped_column(String(60), nullable=True)
+    unidad: Mapped[str] = mapped_column(String(10), nullable=False, server_default="UND")
+
     activo: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
     created_at: Mapped[DateTime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+
+
+
+

@@ -14,13 +14,19 @@ class VentaCreate(BaseModel):
     metodo_pago: str = "efectivo"
 
     cliente_id: int | None = None
+    #efectivo_recibido: float | None = 0
+    efectivo_recibido: float = Field(default=0, ge=0)
+
 
 class VentaOut(BaseModel):
     id: int
     numero: int
     total: float
     estado: str
-    can_cancel: bool = False
+    can_cancel: bool = True
+    metodo_pago: str
+    efectivo_recibido: float = 0
+    vuelto: float = 0
     class Config:
         from_attributes = True
 
@@ -54,6 +60,10 @@ class VentaDetailOut(BaseModel):
     metodo_pago: str
     estado: str
     items: list[VentaDetalleItemOut]
+
+    efectivo_recibido: float = 0
+    vuelto: float = 0
+    can_cancel: bool = True
 
 # Backend para anular venta
 class VentaCancelIn(BaseModel):

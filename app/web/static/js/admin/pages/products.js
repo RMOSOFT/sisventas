@@ -51,12 +51,15 @@ async function loadProductsPage(){
     const stock_actual = Number(document.getElementById("f_stock").value || 0);
     const stock_minimo = Number(document.getElementById("f_min").value || 0);
 
+    const marca  = document.getElementById("f_marca").value.trim() || null;
+    const unidad = document.getElementById("f_unidad").value.trim() || "UND";
+
     if(!nombre){ msg.textContent="❌ Falta nombre"; return; }
     if(precio < 0 || costo < 0 || stock_actual < 0 || stock_minimo < 0){
       msg.textContent="❌ Valores inválidos"; return;
     }
 
-    const payload = {nombre, sku, precio, costo, stock_actual, stock_minimo, activo:true};
+    const payload = {nombre, sku, precio, costo, stock_actual, stock_minimo, marca, unidad, activo:true};
 
     const res = await api("/api/v1/admin/products", {method:"POST", body: JSON.stringify(payload)});
     const data = await res.json();
@@ -66,7 +69,7 @@ async function loadProductsPage(){
     document.getElementById("modal").classList.add("hidden");
 
     // limpiar
-    ["f_nombre","f_sku","f_precio","f_costo","f_stock","f_min"].forEach(id=>document.getElementById(id).value="");
+    ["f_nombre","f_sku","f_precio","f_costo","f_stock","f_min","f_marca","f_unidad"].forEach(id=>document.getElementById(id).value="");
     await refresh(document.getElementById("p_search").value || "");
   });
 

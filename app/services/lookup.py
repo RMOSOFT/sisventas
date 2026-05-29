@@ -1,4 +1,4 @@
-
+# app/services/lookup.py  (tu lookup.py)
 import os
 import httpx
 
@@ -38,7 +38,7 @@ async def lookup_document(tipo: str, num: str) -> dict:
     token = _token()
     base = _base_url()
     if not token or not base:
-        raise LookupNotConfigured("Falta APIPERU_TOKEN o APIPERU_BASE_URL")
+        raise LookupNotConfigured("Falta APISPERU_TOKEN o APISPERU_BASE_URL")
 
     tipo = tipo.strip().upper()
     num = num.strip()
@@ -77,130 +77,135 @@ async def lookup_document(tipo: str, num: str) -> dict:
 
         data = raw.get("data") or {}
 
+        # =======================
+        # NORMALIZACIÓN PARA UI POS
+        # =======================
         if tipo == "DNI":
+            # El proveedor devuelve esto:
+            # numero, nombre_completo, nombres, apellido_paterno, apellido_materno,
+            # codigo_verificacion, direccion, ubigeo_reniec/ubigeo_sunat/ubigeo...
             return {
                 "tipo_doc": "DNI",
                 "num_doc": data.get("numero") or num,
-                "razon_social": (data.get("nombre_completo") or "").strip(),
-                "direccion": "",  # DNI normalmente no trae dirección
+
+                # Para mostrar en UI (y también te sirve para cliente rápido)
+                "nombre_completo": (data.get("nombre_completo") or "").strip(),
+                "nombres": (data.get("nombres") or "").strip(),
+                "apellido_paterno": (data.get("apellido_paterno") or "").strip(),
+                "apellido_materno": (data.get("apellido_materno") or "").strip(),
+
+                # Extras
+                "codigo_verificacion": data.get("codigo_verificacion") or data.get("codVerifica") or "",
+                "direccion": (data.get("direccion") or data.get("direccion_completa") or "").strip(),
+                "ubigeo": (
+                    data.get("ubigeo_reniec")
+                    or data.get("ubigeo_sunat")
+                    or (data.get("ubigeo") if isinstance(data.get("ubigeo"), str) else "")
+                    or ""
+                ),
+                "estado_civil": (data.get("estadoCivil") or data.get("estado_civil") or "").strip(),
+
+
+                #"razon_social": (data.get("nombre_completo") or "").strip(),
+                #"direccion": "",  # DNI normalmente no trae dirección
             }
 
-        # RUC
+        # RUC (tu proveedor devuelve: nombre_o_razon_social, direccion, direccion_completa, etc.)
+        razon = (
+            data.get("nombre_o_razon_social")
+            or data.get("razonSocial")
+            or data.get("razon_social")
+            or ""
+        )
+        direccion = data.get("direccion") or data.get("direccion_completa") or ""
+
+
         return {
             "tipo_doc": "RUC",
             "num_doc": data.get("ruc") or num,
-            "razon_social": (data.get("razonSocial") or data.get("razon_social") or "").strip(),
-            "direccion": (data.get("direccion_completa") or data.get("direccion") or "").strip(),
+            "razon_social": razon.strip(),
+            #"razon_social": (data.get("razonSocial") or data.get("razon_social") or "").strip(),
+            "direccion": direccion.strip(),
+            #"direccion": (data.get("direccion_completa") or data.get("direccion") or "").strip(),
+            # extras opcionales si luego quieres mostrarlos:
+            "estado": (data.get("estado") or "").strip(),
+            "condicion": (data.get("condicion") or data.get("condicio") or "").strip(),
         }
 
     except httpx.RequestError:
         raise LookupError("No se pudo conectar al proveedor")
+
+
 """
-import os
-import httpx
+def _pick_ubigeo(data: dict) -> str:
+    # apiperu a veces trae ubigeo como string, a veces lista [dep,prov,dist]
+    u = data.get("ubigeo")
+    if isinstance(u, str):
+        return u.strip()
+    if isinstance(u, (list, tuple)):
+        parts = [str(x).strip() for x in u if x]
+        return "-".join(parts) if parts else ""
+    return (data.get("ubigeo_reniec") or data.get("ubigeo_sunat") or "").strip()
 
-from dotenv import load_dotenv
+if tipo == "DNI":
+    nombres = (data.get("nombres") or "").strip()
+    ap_pat  = (data.get("apellido_paterno") or data.get("apellidoPaterno") or "").strip()
+    ap_mat  = (data.get("apellido_materno") or data.get("apellidoMaterno") or "").strip()
 
-load_dotenv()
+    # apiperu: codigo_verificacion (int) o a veces codigoVerificacion
+    codver = data.get("codigo_verificacion")
+    if codver is None:
+        codver = data.get("codigoVerificacion")
+    codver = "" if codver is None else str(codver)
 
-class LookupNotConfigured(Exception):
-    pass
+    direccion = (data.get("direccion") or data.get("direccion_completa") or "").strip()
+    estado_civil = (data.get("estado_civil") or data.get("estadoCivil") or "").strip()
+    ubigeo = _pick_ubigeo(data)
 
-class LookupError(Exception):
-    pass
+    # nombre_completo ya viene “APELLIDOS, NOMBRES”
+    razon = (data.get("nombre_completo") or "").strip()
+    if not razon:
+        razon = f"{ap_pat} {ap_mat} {nombres}".strip()
 
-def _provider() -> str:
-    return (os.getenv("LOOKUP_PROVIDER") or "none").strip().lower()
+    return {
+        "tipo_doc": "DNI",
+        "num_doc": (data.get("numero") or num),
+        "razon_social": razon,
+        "direccion": direccion,
 
-def _token() -> str:
-    return (os.getenv("APISPERU_TOKEN") or "").strip()
+        # ✅ campos extra para tu panel
+        "nombres": nombres,
+        "apellido_paterno": ap_pat,
+        "apellido_materno": ap_mat,
+        "codigo_verificacion": codver,
+        "estado_civil": estado_civil,
+        "ubigeo": ubigeo,
+    }
 
-def _base_url() -> str:
-    return (os.getenv("APISPERU_BASE_URL") or "").strip().rstrip("/")
+# RUC
+razon = (
+    data.get("nombre_o_razon_social")
+    or data.get("nombreOrazonSocial")
+    or data.get("razonSocial")
+    or data.get("razon_social")
+    or ""
+).strip()
 
-#def get_provider_name() -> str:
-#    return (os.getenv("LOOKUP_PROVIDER") or "none").strip().lower()
+direccion = (data.get("direccion_completa") or data.get("direccion") or "").strip()
+ubigeo = _pick_ubigeo(data)
 
-async def lookup_document(tipo: str, num: str) -> dict:
-    
-    #Retorna dict normalizado:
-    #{
-    #  "tipo_doc": "RUC | DNI",
-    #  "num_doc": "20123456789",
-    #  "razon_social": "...",
-    #  "direccion": "...",
-    #  "telefono": None,
-    #  "email": None
-    #}
-    
+return {
+    "tipo_doc": "RUC",
+    "num_doc": (data.get("ruc") or num),
+    "razon_social": razon,
+    "direccion": direccion,
 
-    if _provider() != "apisperu":
-        raise LookupNotConfigured("Lookup no configurado (provider=none)")
-
-    token = _token()
-    base = _base_url()
-    if not token or not base:
-        raise LookupNotConfigured("Falta APISPERU_TOKEN o APISPERU_BASE_URL")
-
-    tipo = tipo.strip().upper()
-    num = num.strip()
-
-
-    if tipo == "RUC":
-        url = f"{base}/ruc/{num}"
-    elif tipo == "DNI":
-        url = f"{base}/dni/{num}"
-    else:
-        raise LookupError("Tipo no soportado en lookup (solo DNI/RUC)")
-
-    # ✅ DEBUG (déjalo mientras pruebas)    
-    print("LOOKUP URL:", url, "TOKEN OK:", bool(token))
-    # print("STATUS:", resp.status_code)
-    print("BODY:", resp.text[:200])
-
-    try:
-        async with httpx.AsyncClient(timeout=10) as client:
-            # según tu captura: token por querystring
-            resp = await client.get(url, params={"token": token})
-
-        print("STATUS:", resp.status_code)
-        print("BODY:", resp.text[:200])
-
-        if resp.status_code != 200:
-            raise LookupError(f"Proveedor respondió {resp.status_code}")
-
-        raw = resp.json() or {}
-
-        # ApisPeru: cuando no existe devuelve success=false
-        if raw.get("success") is False:
-            # no es falla de conexión, es "no hay data"
-            raise LookupError(raw.get("message") or "No se encontraron resultados.")
-
-        # ✅ Normalización (para POS)
-        if tipo == "RUC":
-            razon = raw.get("razonSocial") or raw.get("razon_social") or raw.get("nombre") or ""
-            direccion = raw.get("direccion") or raw.get("domicilioFiscal") or ""
-            return {
-                "tipo_doc": "RUC",
-                "num_doc": num,
-                "razon_social": razon.strip(),
-                "direccion": direccion.strip(),
-            }
-
-        # DNI
-        nombres = raw.get("nombres") or ""
-        ape_pat = raw.get("apellidoPaterno") or raw.get("apellido_paterno") or ""
-        ape_mat = raw.get("apellidoMaterno") or raw.get("apellido_materno") or ""
-        razon = (f"{nombres} {ape_pat} {ape_mat}").strip()
-        return {
-            "tipo_doc": "DNI",
-            "num_doc": num,
-            "razon_social": razon,      # para tu tabla clientes sirve como "nombres"
-            "direccion": "",            # normalmente DNI no trae dirección
-            "nombres": nombres.strip(),
-            "apellidos": (f"{ape_pat} {ape_mat}").strip(),
-        }
-
-    except httpx.RequestError:
-        raise LookupError("No se pudo conectar al proveedor")
+    # ✅ para panel (en RUC varios quedan vacíos, normal)
+    "nombres": razon,                 # para que se vea algo en “Nombres”
+    "apellido_paterno": "",
+    "apellido_materno": "",
+    "codigo_verificacion": "",
+    "estado_civil": "",
+    "ubigeo": ubigeo,
+}
 """

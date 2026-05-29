@@ -9,8 +9,13 @@
         {% if empresa %}{{ empresa.nombre }} • {% endif %}RMOSOFT Ventas
     </title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="/static/css/styles.css">
-    <link rel="stylesheet" href="/static/css/ticket_80mm.css">
+
+    <!-- Estilos personalizados -->
+    <link rel="stylesheet" href="{{ url_for('static', path='css/ticket_80mm.css.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', path='css/admin/style.css') }}">
+
+    <link rel="manifest" href="/static/manifest.json">
+    <meta name="theme-color" content="#0B1F3A">
 
     
 </head>
@@ -91,7 +96,7 @@
               <button
                 id="btn_logout"
                 class="inline-flex items-center rounded-lg px-3 py-1.5 text-sm font-semibold
-                       bg-[#0B1F3A] text-white hover:opacity-95">
+                bg-[#0B1F3A] text-white hover:opacity-95">
                 Salir
               </button>
             </div>
@@ -102,7 +107,8 @@
 
     </header>
     
-    <main class="max-w-6xl mx-auto p-3">
+    <!--max-w-6xl mx-auto-->
+    <main class="w-full max-w-none p-3">
         {% block content %}{% endblock %}
     </main>
 
@@ -129,6 +135,14 @@
 
     <script src="/static/js/admin/layouts.js"></script>
     <script src="/static/js/superadmin/layouts.js"></script>
+
+    <script>
+      if ("serviceWorker" in navigator) {
+        window.addEventListener("load", () => {
+          navigator.serviceWorker.register("/static/sw.js");
+        });
+      }
+    </script>
 
 </body>
 </html>

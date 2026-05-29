@@ -1,1 +1,15 @@
-ticket_80mm.css
+.company-name{
+  font-weight: 900;
+  font-size: 15px;
+  text-transform: uppercase;
+  letter-spacing: .2px;
+  margin-bottom: 2px;
+}
+
+.company-line{
+  font-size: 11px;
+  line-height: 1.15;
+  color: #000;
+  margin: 1px 0;
+}
+
